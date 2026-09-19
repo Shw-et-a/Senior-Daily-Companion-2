@@ -1,0 +1,248 @@
+/**
+ * Senior Daily Companion - Accessible Styling & Themes
+ * Built specifically for older adults: high contrast, large touch targets, legible fonts.
+ */
+
+:root {
+  --base-font-size: 19px;
+  --line-height: 1.6;
+  
+  /* Warm & Cozy Theme (Default) */
+  --bg-primary: #FFFDF9;
+  --bg-secondary: #FDF6E2;
+  --bg-card: #FFFFFF;
+  --text-main: #1C1917;
+  --text-muted: #57534E;
+  --accent-primary: #D97706;
+  --accent-hover: #B45309;
+  --accent-text: #FFFFFF;
+  --border-color: #E7E5E4;
+  --border-strong: #A8A29E;
+  --shadow-color: rgba(28, 25, 23, 0.08);
+  --success-color: #15803D;
+  --danger-color: #B91C1C;
+  --warning-color: #B45309;
+}
+
+/* High Contrast Light Theme */
+body.theme-light {
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F4F4F5;
+  --bg-card: #FFFFFF;
+  --text-main: #000000;
+  --text-muted: #27272A;
+  --accent-primary: #000000;
+  --accent-hover: #27272A;
+  --accent-text: #FFFFFF;
+  --border-color: #000000;
+  --border-strong: #000000;
+  --shadow-color: rgba(0, 0, 0, 0.15);
+  --success-color: #047857;
+  --danger-color: #DC2626;
+  --warning-color: #D97706;
+}
+
+/* High Contrast Dark Theme */
+body.theme-dark {
+  --bg-primary: #0F172A;
+  --bg-secondary: #1E293B;
+  --bg-card: #1E293B;
+  --text-main: #F8FAFC;
+  --text-muted: #CBD5E1;
+  --accent-primary: #FDE047;
+  --accent-hover: #FEF08A;
+  --accent-text: #0F172A;
+  --border-color: #475569;
+  --border-strong: #94A3B8;
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --success-color: #4ADE80;
+  --danger-color: #F87171;
+  --warning-color: #FBBF24;
+}
+
+/* Font Size Scales */
+body.font-normal {
+  --base-font-size: 19px;
+}
+
+body.font-large {
+  --base-font-size: 23px;
+}
+
+body.font-xlarge {
+  --base-font-size: 27px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: var(--base-font-size);
+}
+
+body {
+  font-family: 'Lexend', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  line-height: var(--line-height);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  transition: background-color 0.25s ease, color 0.25s ease, font-size 0.2s ease;
+}
+
+/* Accessible focus ring for keyboard & tap navigation */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible {
+  outline: 4px solid #F59E0B !important;
+  outline-offset: 3px !important;
+}
+
+/* Touch-friendly buttons (Minimum 52px height) */
+.senior-btn {
+  min-height: 52px;
+  padding: 0.75rem 1.25rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.senior-btn-primary {
+  background-color: var(--accent-primary);
+  color: var(--accent-text);
+  border-color: var(--accent-primary);
+}
+
+.senior-btn-primary:hover {
+  background-color: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+.senior-btn-secondary {
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  border-color: var(--border-strong);
+}
+
+.senior-btn-secondary:hover {
+  background-color: var(--bg-secondary);
+}
+
+.senior-btn-danger {
+  background-color: var(--danger-color);
+  color: #FFFFFF;
+  border-color: var(--danger-color);
+}
+
+/* Senior Card styling */
+.senior-card {
+  background-color: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: 18px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 16px var(--shadow-color);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.senior-card-interactive:hover {
+  border-color: var(--accent-primary);
+  transform: translateY(-2px);
+}
+
+/* Pulse animation for voice listening */
+@keyframes micPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.6);
+  }
+  70% {
+    box-shadow: 0 0 0 18px rgba(220, 38, 38, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
+  }
+}
+
+.mic-active {
+  animation: micPulse 1.5s infinite;
+  background-color: #DC2626 !important;
+  color: #FFFFFF !important;
+}
+
+/* Router LED animations */
+.led-light {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.led-green {
+  background-color: #22C55E;
+  box-shadow: 0 0 10px #22C55E;
+}
+
+.led-red {
+  background-color: #EF4444;
+  box-shadow: 0 0 10px #EF4444;
+}
+
+.led-orange {
+  background-color: #F97316;
+  box-shadow: 0 0 10px #F97316;
+}
+
+@keyframes ledBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.led-blink {
+  animation: ledBlink 1s infinite;
+}
+
+/* Responsive modal dialog */
+.senior-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 100;
+  backdrop-filter: blur(4px);
+}
+
+.senior-modal-content {
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  border: 3px solid var(--border-color);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 620px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 2rem;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+/* Big readable check items */
+.med-checkbox {
+  width: 32px;
+  height: 32px;
+  accent-color: #15803D;
+  cursor: pointer;
+}

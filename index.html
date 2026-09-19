@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Senior Daily Companion • वरिष्ठ दैनिक सहायक</title>
+  <meta name="description" content="An intelligent, accessible, and trustworthy digital companion designed specifically for senior citizens to help with everyday tasks.">
+
+  <!-- Google Fonts: Lexend (Specially designed to improve reading proficiency and legibility) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Lexend', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Accessible Custom Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="font-normal antialiased">
+
+  <!-- Top Accessibility & Navigation Bar -->
+  <header class="border-b-2 border-stone-200 dark:border-slate-800 bg-white dark:bg-slate-900 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- Brand & Title -->
+      <div class="flex items-center gap-3">
+        <span class="text-3xl sm:text-4xl" role="img" aria-label="Sun">☀️</span>
+        <div>
+          <h1 class="font-bold text-xl sm:text-2xl text-amber-900 dark:text-amber-400" data-i18n="app_title">
+            Senior Daily Companion
+          </h1>
+          <p class="text-sm text-stone-600 dark:text-stone-300 hidden sm:block" data-i18n="app_tagline">
+            Your caring, patient guide for everyday tasks
+          </p>
+        </div>
+      </div>
+
+      <!-- Quick Accessibility Toolbar -->
+      <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+        
+        <!-- Text Size Controls -->
+        <div class="flex items-center border-2 border-stone-300 dark:border-slate-700 rounded-xl p-1 bg-stone-50 dark:bg-slate-800" title="Text Size">
+          <button data-font-size="font-normal" class="px-2.5 py-1 text-base font-bold rounded-lg hover:bg-stone-200 dark:hover:bg-slate-700" aria-label="Standard Font Size">A</button>
+          <button data-font-size="font-large" class="px-2.5 py-1 text-lg font-bold rounded-lg hover:bg-stone-200 dark:hover:bg-slate-700" aria-label="Large Font Size">A+</button>
+          <button data-font-size="font-xlarge" class="px-2.5 py-1 text-xl font-bold rounded-lg hover:bg-stone-200 dark:hover:bg-slate-700" aria-label="Extra Large Font Size">A++</button>
+        </div>
+
+        <!-- Contrast Selector -->
+        <select id="contrast-select" class="senior-btn-secondary px-3 py-1.5 rounded-xl text-base border-2 font-medium cursor-pointer" aria-label="Visual Theme">
+          <option value="warm" data-i18n="contrast_warm">Warm & Cozy</option>
+          <option value="light" data-i18n="contrast_light">High Contrast Light</option>
+          <option value="dark" data-i18n="contrast_dark">High Contrast Dark</option>
+        </select>
+
+        <!-- Bilingual Switcher -->
+        <div class="flex items-center border-2 border-stone-300 dark:border-slate-700 rounded-xl p-0.5 bg-stone-50 dark:bg-slate-800">
+          <button id="lang-en-btn" class="senior-btn senior-btn-primary px-3 py-1 font-bold">English</button>
+          <button id="lang-hi-btn" class="senior-btn senior-btn-secondary px-3 py-1">हिन्दी</button>
+        </div>
+
+        <!-- AI Setup Button -->
+        <button id="btn-api-modal-trigger" class="senior-btn senior-btn-secondary px-3 py-1.5 text-base" data-i18n="api_key_btn">
+          🔑 AI Setup
+        </button>
+
+        <!-- Emergency SOS Button -->
+        <button id="btn-sos-trigger" class="senior-btn senior-btn-danger px-4 py-1.5 text-base font-bold shadow-md animate-bounce" data-i18n="sos_btn">
+          🆘 Emergency SOS
+        </button>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-6xl mx-auto px-4 py-6">
+
+    <!-- Greeting, Date & Hydration Header -->
+    <section class="senior-card mb-8 border-amber-300 dark:border-amber-700 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-slate-900 dark:to-slate-800">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 id="daily-greeting-text" class="text-3xl sm:text-4xl font-extrabold text-amber-950 dark:text-amber-300 mb-1">
+            Good Morning! 🌅
+          </h2>
+          <p id="daily-date-text" class="text-xl font-semibold text-amber-900 dark:text-amber-200 mb-2">
+            Today is ...
+          </p>
+          <p class="text-lg text-stone-700 dark:text-stone-300" data-i18n="greeting_subtitle">
+            Take your time. I am right here beside you to help.
+          </p>
+        </div>
+
+        <!-- Hydration Tracker Quick Action -->
+        <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border-2 border-amber-200 dark:border-slate-700 flex flex-col items-center text-center shadow-sm">
+          <span class="text-sm font-semibold text-stone-600 dark:text-stone-300 mb-1" data-i18n="wellbeing_water_count">
+            Glasses today:
+          </span>
+          <div class="text-4xl font-extrabold text-blue-600 dark:text-blue-400 mb-2" id="water-count-number">0</div>
+          <button id="btn-drink-water" class="senior-btn bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-base font-bold shadow-sm" data-i18n="wellbeing_water_btn">
+            💧 Drank a Glass!
+          </button>
+        </div>
+      </div>
+
+      <!-- Proactive Daily Cards Row -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pt-4 border-t border-amber-200 dark:border-slate-700">
+        <!-- Daily Comfort Tip -->
+        <div class="p-4 rounded-xl bg-white/80 dark:bg-slate-800/80 border border-amber-200 dark:border-slate-700">
+          <h3 class="font-bold text-xl text-amber-900 dark:text-amber-300 mb-1 flex items-center gap-2" data-i18n="card_tip_title">
+            💡 Daily Comfort Tip
+          </h3>
+          <p class="text-base sm:text-lg text-stone-700 dark:text-stone-300" data-i18n="card_tip_text">
+            Rest your eyes for 20 seconds every 20 minutes. Look out the window at something green and far away.
+          </p>
+        </div>
+
+        <!-- Scam Radar Warning -->
+        <div class="p-4 rounded-xl bg-red-50/90 dark:bg-red-950/40 border-2 border-red-300 dark:border-red-800">
+          <h3 class="font-bold text-xl text-red-700 dark:text-red-400 mb-1 flex items-center gap-2" data-i18n="card_scam_title">
+            ⚠️ Today's Scam Warning
+          </h3>
+          <p class="text-base sm:text-lg text-stone-800 dark:text-stone-200" data-i18n="card_scam_text">
+            Beware of calls saying 'Electricity will be cut tonight'. Never download AnyDesk or share OTPs.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Touch Tiles (Big Buttons for Core Senior Tasks) -->
+    <section class="mb-8">
+      <div class="mb-4">
+        <h2 class="text-2xl sm:text-3xl font-bold text-stone-900 dark:text-stone-100" data-i18n="quick_tiles_title">
+          What would you like help with right now?
+        </h2>
+        <p class="text-lg text-stone-600 dark:text-stone-400" data-i18n="quick_tiles_subtitle">
+          Tap any large button below — no typing required!
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Wi-Fi Tile -->
+        <button data-quick-action="wifi" class="senior-card senior-card-interactive text-left p-5 flex flex-col justify-between border-amber-300 hover:border-amber-500">
+          <div class="text-4xl mb-2">📶</div>
+          <div>
+            <h3 class="font-bold text-xl text-amber-900 dark:text-amber-300" data-i18n="tile_wifi">Fix My Wi-Fi</h3>
+            <p class="text-sm text-stone-600 dark:text-stone-400 mt-1" data-i18n="tile_wifi_desc">Router lights & internet connection</p>
+          </div>
+        </button>
+
+        <!-- Flight Tile -->
+        <button data-quick-action="flight" class="senior-card senior-card-interactive text-left p-5 flex flex-col justify-between border-sky-300 hover:border-sky-500">
+          <div class="text-4xl mb-2">✈️</div>
+          <div>
+            <h3 class="font-bold text-xl text-sky-900 dark:text-sky-300" data-i18n="tile_flight">Book a Flight</h3>
+            <p class="text-sm text-stone-600 dark:text-stone-400 mt-1" data-i18n="tile_flight_desc">Senior discount & wheelchair help</p>
+          </div>
+        </button>
+
+        <!-- Scam Check Tile -->
+        <button data-quick-action="scam" class="senior-card senior-card-interactive text-left p-5 flex flex-col justify-between border-red-300 hover:border-red-500">
+          <div class="text-4xl mb-2">🛡️</div>
+          <div>
+            <h3 class="font-bold text-xl text-red-800 dark:text-red-300" data-i18n="tile_scam">Check Suspicious SMS</h3>
+            <p class="text-sm text-stone-600 dark:text-stone-400 mt-1" data-i18n="tile_scam_desc">Find out if a message is a scam</p>
+          </div>
+        </button>
+
+        <!-- Medicine Reminders -->
+        <button data-quick-action="meds" class="senior-card senior-card-interactive text-left p-5 flex flex-col justify-between border-green-300 hover:border-green-500">
+          <div class="text-4xl mb-2">💊</div>
+          <div>
+            <h3 class="font-bold text-xl text-green-900 dark:text-green-300" data-i18n="tile_meds">Medicine Reminders</h3>
+            <p class="text-sm text-stone-600 dark:text-stone-400 mt-1" data-i18n="tile_meds_desc">Check off your daily tablets</p>
+          </div>
+        </button>
+
+        <!-- WhatsApp Video Call -->
+        <button data-quick-action="whatsapp" class="senior-card senior-card-interactive text-left p-5 flex flex-col justify-between border-emerald-300 hover:border-emerald-500">
+          <div class="text-4xl mb-2">📱</div>
+          <div>
+            <h3 class="font-bold text-xl text-emerald-900 dark:text-emerald-300" data-i18n="tile_whatsapp">WhatsApp Video Call</h3>
+            <p class="text-sm text-stone-600 dark:text-stone-400 mt-1" data-i18n="tile_whatsapp_desc">How to call children & family</p>
+          </div>
+        </button>
+
+        <!-- TV No Signal -->
+        <button data-quick-action="wifi" class="senior-card senior-card-interactive text-left p-5 flex flex-col justify-between border-purple-300 hover:border-purple-500">
+          <div class="text-4xl mb-2">📺</div>
+          <div>
+            <h3 class="font-bold text-xl text-purple-900 dark:text-purple-300" data-i18n="tile_tv">Fix TV 'No Signal'</h3>
+            <p class="text-sm text-stone-600 dark:text-stone-400 mt-1" data-i18n="tile_tv_desc">Remote control & HDMI inputs</p>
+          </div>
+        </button>
+
+        <!-- Bills -->
+        <button data-quick-action="bills" class="senior-card senior-card-interactive text-left p-5 flex flex-col justify-between border-amber-300 hover:border-amber-500">
+          <div class="text-4xl mb-2">🧾</div>
+          <div>
+            <h3 class="font-bold text-xl text-amber-900 dark:text-amber-300" data-i18n="tile_bills">Understand My Bill</h3>
+            <p class="text-sm text-stone-600 dark:text-stone-400 mt-1" data-i18n="tile_bills_desc">Simplify confusing numbers & dates</p>
+          </div>
+        </button>
+
+        <!-- Pension / Jeevan Pramaan -->
+        <button data-quick-action="pension" class="senior-card senior-card-interactive text-left p-5 flex flex-col justify-between border-indigo-300 hover:border-indigo-500">
+          <div class="text-4xl mb-2">📜</div>
+          <div>
+            <h3 class="font-bold text-xl text-indigo-900 dark:text-indigo-300" data-i18n="tile_pension">Life Certificate</h3>
+            <p class="text-sm text-stone-600 dark:text-stone-400 mt-1" data-i18n="tile_pension_desc">Jeevan Pramaan step-by-step</p>
+          </div>
+        </button>
+      </div>
+    </section>
+
+    <!-- Main Navigation Tabs -->
+    <nav class="flex flex-wrap gap-2 mb-6 border-b-2 border-stone-200 dark:border-slate-800 pb-3" aria-label="Feature Tabs">
+      <button data-tab-target="companion" class="senior-btn senior-btn-primary px-4 py-2 font-bold shadow-md" data-i18n="tab_companion">
+        💬 Ask Companion
+      </button>
+      <button data-tab-target="wifi" class="senior-btn senior-btn-secondary px-4 py-2" data-i18n="tab_wifi">
+        📶 Fix Wi-Fi & TV
+      </button>
+      <button data-tab-target="flight" class="senior-btn senior-btn-secondary px-4 py-2" data-i18n="tab_flight">
+        ✈️ Book Flights
+      </button>
+      <button data-tab-target="scam" class="senior-btn senior-btn-secondary px-4 py-2" data-i18n="tab_scam">
+        🛡️ Scam Checker
+      </button>
+      <button data-tab-target="medicine" class="senior-btn senior-btn-secondary px-4 py-2" data-i18n="tab_medicine">
+        💊 Medicine Tracker
+      </button>
+      <button data-tab-target="bills" class="senior-btn senior-btn-secondary px-4 py-2" data-i18n="tab_bills">
+        📄 Explain a Bill
+      </button>
+    </nav>
+
+    <!-- TAB 1: COMPANION CHAT -->
+    <div id="tab-pane-companion" class="tab-pane">
+      <section class="senior-card p-6 mb-6">
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-2xl sm:text-3xl font-bold text-amber-950 dark:text-amber-400" data-i18n="chat_header">
+            Talk with your Companion
+          </h2>
+          <div id="api-status-indicator"></div>
+        </div>
+        <p class="text-lg text-stone-600 dark:text-stone-300 mb-6" data-i18n="chat_sub">
+          Ask any question in simple words. You can type or tap the microphone to speak.
+        </p>
+
+        <!-- Big Accessible Input Area -->
+        <div class="mb-4">
+          <label for="chat-user-input" class="sr-only">Ask a question</label>
+          <textarea
+            id="chat-user-input"
+            rows="3"
+            class="w-full p-4 text-xl rounded-2xl border-2 border-stone-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-stone-900 dark:text-stone-100 focus:ring-4 focus:ring-amber-400"
+            data-i18n-placeholder="chat_placeholder"
+            placeholder="e.g., How do I order medicines on PharmEasy? or Why is my phone sound low?"
+          ></textarea>
+        </div>
+
+        <!-- Action Buttons: Send & Speak -->
+        <div class="flex flex-wrap items-center gap-3">
+          <button id="btn-chat-send" class="senior-btn senior-btn-primary px-6 py-3 text-xl font-bold shadow-md" data-i18n="btn_send">
+            Send Question 🚀
+          </button>
+          
+          <button id="btn-voice-input" class="senior-btn senior-btn-secondary px-6 py-3 text-xl font-bold border-2 border-red-400">
+            <span class="text-2xl">🎤</span>
+            <span class="btn-label" data-i18n="btn_speak">Speak</span>
+          </button>
+        </div>
+
+        <!-- AI Thinking Indicator -->
+        <div id="chat-thinking" class="hidden mt-6 p-4 rounded-xl bg-amber-50 dark:bg-slate-800 border-2 border-amber-300 text-center animate-pulse">
+          <p class="text-xl font-bold text-amber-800 dark:text-amber-300" data-i18n="ai_thinking">
+            Thinking carefully for you... Please wait a moment ⏳
+          </p>
+        </div>
+
+        <!-- Response Card -->
+        <div id="chat-response-card" class="hidden mt-8 p-6 rounded-2xl bg-amber-50/60 dark:bg-slate-800 border-2 border-amber-300 dark:border-amber-700 shadow-sm">
+          <div class="flex items-center justify-between mb-4 border-b border-amber-200 dark:border-slate-700 pb-3">
+            <h3 class="text-xl font-bold text-amber-900 dark:text-amber-300 flex items-center gap-2">
+              <span>🧓</span> Your Companion's Step-by-Step Guide
+            </h3>
+            <span class="text-sm font-medium text-stone-500 dark:text-stone-400">Clear & Simple</span>
+          </div>
+
+          <!-- The generated response text -->
+          <div id="chat-response-body" class="text-stone-800 dark:text-stone-200 mb-6"></div>
+
+          <!-- Speech Readout & Helper Action Bar -->
+          <div id="speech-action-bar" class="flex flex-wrap items-center gap-3 pt-4 border-t border-amber-200 dark:border-slate-700">
+            <button id="btn-read-aloud" class="senior-btn bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 font-bold" data-i18n="btn_read_aloud">
+              🔊 Read Out Loud
+            </button>
+            <button id="btn-pause-speech" class="senior-btn bg-yellow-600 hover:bg-yellow-700 text-white px-5 py-2.5 font-bold hidden" data-i18n="btn_pause_speech">
+              ⏸️ Pause Voice
+            </button>
+            <button id="btn-stop-speech" class="senior-btn bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 font-bold hidden" data-i18n="btn_stop_speech">
+              ⏹️ Stop Voice
+            </button>
+            <button id="btn-explain-simpler" class="senior-btn senior-btn-secondary px-5 py-2.5 font-bold" data-i18n="btn_simpler">
+              🔄 Explain More Simply
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- TAB 2: WI-FI & TV TROUBLESHOOTER -->
+    <div id="tab-pane-wifi" class="tab-pane hidden">
+      <section class="senior-card p-6 mb-8">
+        <h2 class="text-3xl font-bold text-amber-950 dark:text-amber-400 mb-2" data-i18n="wifi_wizard_title">
+          Wi-Fi & Internet Troubleshooter
+        </h2>
+        <p class="text-lg text-stone-600 dark:text-stone-300 mb-6" data-i18n="wifi_wizard_sub">
+          We will check your home internet together, one simple step at a time.
+        </p>
+
+        <!-- Simulated Router Visualizer -->
+        <div class="p-6 rounded-2xl bg-stone-900 text-white mb-8 shadow-inner flex flex-col items-center">
+          <p class="text-stone-400 text-sm mb-4 uppercase tracking-wider font-semibold">Your Wi-Fi Router (Front View)</p>
+          <div class="w-full max-w-md bg-stone-800 p-6 rounded-xl border-4 border-stone-700 flex items-center justify-around shadow-2xl">
+            <div class="flex flex-col items-center gap-1">
+              <span class="led-light led-green led-blink"></span>
+              <span class="text-xs text-stone-300">Power</span>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <span class="led-light led-green led-blink"></span>
+              <span class="text-xs text-stone-300">Internet</span>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <span class="led-light led-green led-blink"></span>
+              <span class="text-xs text-stone-300">Wi-Fi</span>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <span class="led-light led-green"></span>
+              <span class="text-xs text-stone-300">LAN</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 1 -->
+        <div class="mb-6 p-4 rounded-xl bg-amber-50 dark:bg-slate-800 border border-amber-200 dark:border-slate-700">
+          <h3 class="font-bold text-xl text-amber-900 dark:text-amber-300 mb-2" data-i18n="wifi_step1_title">
+            Step 1: Check your Wi-Fi Box (Router)
+          </h3>
+          <p class="text-lg text-stone-800 dark:text-stone-200" data-i18n="wifi_step1_desc">
+            Look at your Wi-Fi box. Do you see lights on it? Make sure the black power plug in the wall switch is turned ON.
+          </p>
+        </div>
+
+        <!-- Step 2: Light Check -->
+        <div class="mb-6 p-4 rounded-xl bg-amber-50 dark:bg-slate-800 border border-amber-200 dark:border-slate-700">
+          <h3 class="font-bold text-xl text-amber-900 dark:text-amber-300 mb-2" data-i18n="wifi_step2_title">
+            Step 2: Check the Internet Light Color
+          </h3>
+          <p class="text-lg text-stone-800 dark:text-stone-200 mb-4" data-i18n="wifi_step2_desc">
+            Find the light with a small globe or 'Internet' sign. Is it Green/Blue or Red/Orange?
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <button id="btn-wifi-light-green" class="senior-btn bg-green-600 hover:bg-green-700 text-white font-bold" data-i18n="wifi_step2_green">
+              🟢 It is Green or Blue
+            </button>
+            <button id="btn-wifi-light-red" class="senior-btn bg-red-600 hover:bg-red-700 text-white font-bold" data-i18n="wifi_step2_red">
+              🔴 It is Red, Orange, or Off
+            </button>
+          </div>
+
+          <!-- Dynamic Light Outcomes -->
+          <div id="wifi-green-result" class="hidden mt-4 p-4 rounded-xl bg-green-50 dark:bg-green-950/40 border-2 border-green-500">
+            <h4 class="font-bold text-xl text-green-900 dark:text-green-300 mb-1">Great news! The internet line is working.</h4>
+            <p class="text-lg text-stone-800 dark:text-stone-200" data-i18n="wifi_phone_desc">
+              Swipe down from the top of your phone screen. Tap the Wi-Fi icon off, wait 5 seconds, and tap it back on.
+            </p>
+          </div>
+
+          <div id="wifi-red-result" class="hidden mt-4 p-4 rounded-xl bg-red-50 dark:bg-red-950/40 border-2 border-red-500">
+            <h4 class="font-bold text-xl text-red-900 dark:text-red-300 mb-1">The box has lost connection.</h4>
+            <p class="text-lg text-stone-800 dark:text-stone-200 mb-3">
+              Don't worry, 90% of the time a 30-second restart fixes it completely. Proceed to Step 3 below!
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 3: Interactive 30s Countdown Timer -->
+        <div class="mb-6 p-5 rounded-xl bg-amber-100/60 dark:bg-slate-800 border-2 border-amber-400 dark:border-amber-600 text-center">
+          <h3 class="font-bold text-2xl text-amber-950 dark:text-amber-300 mb-2" data-i18n="wifi_step3_title">
+            Step 3: The 30-Second Refresh Trick
+          </h3>
+          <p class="text-lg text-stone-800 dark:text-stone-200 mb-4" data-i18n="wifi_step3_desc">
+            Turn off the wall switch of the Wi-Fi box. Wait 30 seconds before turning it back on. Use our timer below!
+          </p>
+          <button id="btn-start-wifi-timer" class="senior-btn senior-btn-primary text-xl px-8 py-3 shadow-lg" data-i18n="wifi_timer_btn">
+            Start 30-Second Countdown ⏱️
+          </button>
+          <div id="wifi-timer-display" class="hidden mt-4 text-2xl font-extrabold text-amber-900 dark:text-amber-300"></div>
+        </div>
+
+        <!-- TV Helper Card -->
+        <div class="p-4 rounded-xl bg-purple-50 dark:bg-purple-950/30 border-2 border-purple-300 dark:border-purple-800">
+          <h3 class="font-bold text-2xl text-purple-950 dark:text-purple-300 mb-2" data-i18n="tv_wizard_title">
+            TV 'No Signal' Helper
+          </h3>
+          <ul class="list-disc list-inside space-y-2 text-lg text-stone-800 dark:text-stone-200">
+            <li data-i18n="tv_step1">Grab your TV Remote (not the set-top box remote).</li>
+            <li data-i18n="tv_step2">Look for a button named 'Source', 'Input', or a square with an arrow pointing inside 🔲➡️.</li>
+            <li data-i18n="tv_step3">Press that button and select 'HDMI 1' or 'HDMI 2' where your cable box is plugged in.</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+
+    <!-- TAB 3: FLIGHT BOOKING GUIDE -->
+    <div id="tab-pane-flight" class="tab-pane hidden">
+      <section class="senior-card p-6 mb-8">
+        <h2 class="text-3xl font-bold text-sky-950 dark:text-sky-400 mb-2" data-i18n="flight_wizard_title">
+          Senior Flight Booking Guide
+        </h2>
+        <p class="text-lg text-stone-600 dark:text-stone-300 mb-6" data-i18n="flight_wizard_sub">
+          Everything you need to book comfortably with zero stress.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-5 rounded-2xl bg-sky-50 dark:bg-slate-800 border-2 border-sky-200 dark:border-sky-800">
+            <h3 class="font-bold text-xl text-sky-900 dark:text-sky-300 mb-2" data-i18n="flight_discount_title">
+              1. Senior Citizen Concession
+            </h3>
+            <p class="text-lg text-stone-800 dark:text-stone-200" data-i18n="flight_discount_desc">
+              Air India, IndiGo, and SpiceJet offer senior discounts for travelers aged 60+. Carry a government photo ID at the airport.
+            </p>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-sky-50 dark:bg-slate-800 border-2 border-sky-200 dark:border-sky-800">
+            <h3 class="font-bold text-xl text-sky-900 dark:text-sky-300 mb-2" data-i18n="flight_wheelchair_title">
+              2. Free Wheelchair Assistance
+            </h3>
+            <p class="text-lg text-stone-800 dark:text-stone-200" data-i18n="flight_wheelchair_desc">
+              Request free wheelchair help right when booking online or by calling the airline. Airline staff will escort you all the way.
+            </p>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-sky-50 dark:bg-slate-800 border-2 border-sky-200 dark:border-sky-800">
+            <h3 class="font-bold text-xl text-sky-900 dark:text-sky-300 mb-2" data-i18n="flight_seat_title">
+              3. Best Seat Selection
+            </h3>
+            <p class="text-lg text-stone-800 dark:text-stone-200" data-i18n="flight_seat_desc">
+              Always choose an Aisle Seat near the front of the aircraft (rows 2 to 7). It makes walking to the lavatory and deboarding much easier.
+            </p>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-sky-50 dark:bg-slate-800 border-2 border-sky-200 dark:border-sky-800">
+            <h3 class="font-bold text-xl text-sky-900 dark:text-sky-300 mb-2" data-i18n="flight_baggage_title">
+              4. Cabin Baggage & Medications
+            </h3>
+            <p class="text-lg text-stone-800 dark:text-stone-200" data-i18n="flight_baggage_desc">
+              Keep all your daily medicines and doctor prescriptions in your cabin handbag — NEVER put essential medications in check-in luggage!
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- TAB 4: SCAM CHECKER TOOL -->
+    <div id="tab-pane-scam" class="tab-pane hidden">
+      <section class="senior-card p-6 mb-8">
+        <h2 class="text-3xl font-bold text-red-950 dark:text-red-400 mb-2" data-i18n="scam_tool_title">
+          Suspicious Message & Scam Checker
+        </h2>
+        <p class="text-lg text-stone-600 dark:text-stone-300 mb-6" data-i18n="scam_tool_sub">
+          Paste any SMS, WhatsApp message, or email you received. We will tell you if it is safe or a trap.
+        </p>
+
+        <div class="mb-4">
+          <label for="scam-message-input" class="sr-only">Message to check</label>
+          <textarea
+            id="scam-message-input"
+            rows="3"
+            class="w-full p-4 text-xl rounded-2xl border-2 border-stone-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-stone-900 dark:text-stone-100"
+            data-i18n-placeholder="scam_placeholder"
+            placeholder="Paste or type the suspicious message here... (e.g. 'Dear customer your electricity bill is unpaid, call 98765...')"
+          ></textarea>
+        </div>
+
+        <button id="btn-run-scam-check" class="senior-btn senior-btn-danger text-xl px-8 py-3 shadow-md" data-i18n="scam_btn_check">
+          🔍 Analyze Message Safety
+        </button>
+
+        <!-- Dynamic Scam Result Box -->
+        <div id="scam-result-card" class="hidden senior-card p-6 mt-6 border-4">
+          <h3 id="scam-result-title" class="text-2xl font-extrabold mb-3"></h3>
+          
+          <!-- Risk Meter Bar -->
+          <div class="w-full bg-stone-200 dark:bg-slate-700 rounded-full h-4 mb-4">
+            <div id="scam-meter-fill" class="h-4 rounded-full" style="width: 0%"></div>
+          </div>
+
+          <h4 class="font-bold text-lg mb-2">Why this verdict:</h4>
+          <ul id="scam-result-reasons" class="list-disc list-inside text-lg mb-4"></ul>
+
+          <div class="p-4 rounded-xl bg-white dark:bg-slate-900 border border-stone-300 dark:border-slate-700 mb-4">
+            <h4 class="font-bold text-lg text-amber-800 dark:text-amber-300 mb-1">What you should do right now:</h4>
+            <p id="scam-result-action" class="text-lg"></p>
+          </div>
+
+          <p class="text-stone-600 dark:text-stone-400 font-semibold" data-i18n="scam_helpline_text">
+            National Cybercrime Reporting Helpline: Call 1930 (Toll-Free)
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <!-- TAB 5: MEDICINE TRACKER -->
+    <div id="tab-pane-medicine" class="tab-pane hidden">
+      <section class="senior-card p-6 mb-8">
+        <h2 class="text-3xl font-bold text-green-950 dark:text-green-400 mb-2" data-i18n="med_title">
+          Daily Medicine Checklist
+        </h2>
+        <p class="text-lg text-stone-600 dark:text-stone-300 mb-6" data-i18n="med_sub">
+          Keep track of your morning, afternoon, and night tablets.
+        </p>
+
+        <!-- Add Medicine Form -->
+        <div class="flex flex-wrap gap-3 mb-8 p-4 rounded-2xl bg-green-50 dark:bg-slate-800 border-2 border-green-200 dark:border-slate-700">
+          <input
+            id="new-med-name"
+            type="text"
+            class="flex-1 min-w-[240px] p-3 text-lg rounded-xl border border-stone-300 dark:border-slate-600 bg-white dark:bg-slate-900"
+            data-i18n-placeholder="med_add_placeholder"
+            placeholder="Add a new tablet or medicine name..."
+          >
+          <select id="new-med-time" class="p-3 text-lg rounded-xl border border-stone-300 dark:border-slate-600 bg-white dark:bg-slate-900">
+            <option value="morning">Morning</option>
+            <option value="afternoon">Afternoon</option>
+            <option value="evening">Evening</option>
+            <option value="night">Night</option>
+          </select>
+          <button id="btn-add-medicine" class="senior-btn bg-green-600 hover:bg-green-700 text-white font-bold" data-i18n="med_add_btn">
+            Add Medicine ➕
+          </button>
+        </div>
+
+        <!-- Rendered Medicine Checklist -->
+        <div id="medicine-list-container"></div>
+      </section>
+    </div>
+
+    <!-- TAB 6: BILL EXPLAINER -->
+    <div id="tab-pane-bills" class="tab-pane hidden">
+      <section class="senior-card p-6 mb-8">
+        <h2 class="text-3xl font-bold text-amber-950 dark:text-amber-400 mb-2" data-i18n="bill_title">
+          Explain a Confusing Bill or Letter
+        </h2>
+        <p class="text-lg text-stone-600 dark:text-stone-300 mb-6" data-i18n="bill_sub">
+          Paste the text of your electricity, water, credit card, or medical bill.
+        </p>
+
+        <div class="mb-4">
+          <label for="bill-text-input" class="sr-only">Bill text</label>
+          <textarea
+            id="bill-text-input"
+            rows="4"
+            class="w-full p-4 text-xl rounded-2xl border-2 border-stone-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-stone-900 dark:text-stone-100"
+            data-i18n-placeholder="bill_placeholder"
+            placeholder="Paste the bill text or numbers here..."
+          ></textarea>
+        </div>
+
+        <button id="btn-run-bill-check" class="senior-btn senior-btn-primary text-xl px-8 py-3 shadow-md" data-i18n="bill_analyze_btn">
+          Simplify This Bill 🧾
+        </button>
+      </section>
+    </div>
+
+  </main>
+
+  <!-- Emergency SOS Modal -->
+  <div id="emergency-modal" class="senior-modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="senior-modal-content border-red-600">
+      <div class="flex items-center justify-between mb-4 border-b pb-3 border-stone-200 dark:border-slate-700">
+        <h3 class="text-3xl font-extrabold text-red-600 flex items-center gap-2" data-i18n="sos_modal_title">
+          🆘 Emergency Assistance
+        </h3>
+        <button id="btn-close-sos" class="text-3xl font-bold hover:text-red-500 p-2">&times;</button>
+      </div>
+      <p class="text-lg text-stone-700 dark:text-stone-300 mb-6" data-i18n="sos_modal_sub">
+        Tap any number below to call immediately from your device.
+      </p>
+
+      <div class="space-y-4 mb-6">
+        <a href="tel:108" class="senior-btn w-full bg-red-600 hover:bg-red-700 text-white text-2xl font-bold py-4 text-center rounded-2xl shadow-lg" data-i18n="sos_ambulance">
+          🚑 Ambulance: 108
+        </a>
+        <a href="tel:112" class="senior-btn w-full bg-amber-600 hover:bg-amber-700 text-white text-2xl font-bold py-4 text-center rounded-2xl shadow-lg" data-i18n="sos_general">
+          🚨 All-in-One Emergency: 112
+        </a>
+        <a href="tel:14567" class="senior-btn w-full bg-blue-600 hover:bg-blue-700 text-white text-2xl font-bold py-4 text-center rounded-2xl shadow-lg" data-i18n="sos_senior">
+          🧓 Senior Helpline: 14567
+        </a>
+        <a href="tel:1930" class="senior-btn w-full bg-purple-600 hover:bg-purple-700 text-white text-2xl font-bold py-4 text-center rounded-2xl shadow-lg" data-i18n="sos_cyber">
+          🛡️ Cybercrime / Fraud: 1930
+        </a>
+        <a href="tel:100" class="senior-btn w-full senior-btn-secondary text-2xl font-bold py-4 text-center rounded-2xl" data-i18n="sos_police">
+          🚔 Police: 100
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- API Key Setup Modal -->
+  <div id="api-modal" class="senior-modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="senior-modal-content">
+      <div class="flex items-center justify-between mb-4 border-b pb-3 border-stone-200 dark:border-slate-700">
+        <h3 class="text-2xl font-bold text-amber-900 dark:text-amber-300" data-i18n="api_modal_title">
+          Google Gemini AI Settings
+        </h3>
+        <button id="btn-close-api" class="text-3xl font-bold hover:text-red-500 p-2">&times;</button>
+      </div>
+      <p class="text-base text-stone-600 dark:text-stone-300 mb-4" data-i18n="api_modal_sub">
+        Enter your free Gemini API key to activate full live AI responses.
+      </p>
+
+      <div class="mb-4">
+        <input
+          id="api-key-input"
+          type="password"
+          class="w-full p-4 text-lg rounded-xl border-2 border-stone-300 dark:border-slate-600 bg-white dark:bg-slate-800"
+          data-i18n-placeholder="api_key_placeholder"
+          placeholder="Paste your Gemini API key (AIzaSy...)"
+        >
+      </div>
+
+      <div class="flex flex-wrap gap-3 mb-6">
+        <button id="btn-save-api-key" class="senior-btn senior-btn-primary px-6 py-2.5 font-bold" data-i18n="api_key_save">
+          Save Key
+        </button>
+        <button id="btn-clear-api-key" class="senior-btn senior-btn-secondary px-6 py-2.5" data-i18n="api_key_clear">
+          Remove Key
+        </button>
+      </div>
+
+      <p class="text-sm text-stone-500 dark:text-stone-400" data-i18n="api_key_note">
+        Your key stays safely stored in your own browser (localStorage). You can get a free key from Google AI Studio (aistudio.google.com).
+      </p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="mt-12 py-8 border-t-2 border-stone-200 dark:border-slate-800 text-center text-stone-600 dark:text-stone-400 text-sm sm:text-base">
+    <div class="max-w-4xl mx-auto px-4">
+      <p data-i18n="footer_text">
+        Built with love and care for Senior Citizens • 100% Free & Accessible • Works on Phones, Tablets & Computers
+      </p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/translations.js"></script>
+  <script src="js/speech.js"></script>
+  <script src="js/gemini.js"></script>
+  <script src="js/wizards.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
